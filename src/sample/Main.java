@@ -1,5 +1,6 @@
 package sample;
 
+import Geo.Point;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -8,6 +9,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.util.Random;
 
 
 public class Main extends Application {
@@ -26,16 +29,16 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, WIDTH, HEIGHT));
         primaryStage.show();
         primaryStage.setTitle("Hello World");
-        root.getChildren().addAll(canvas);
+        root.getChildren().add(canvas);
 
         AnimationTimer timer = new AnimationTimer() {
             long last;
             @Override
             public void handle(long now) {
                 if (now - last > REFRESH_RATE){
-                    System.out.println(now);
                     ClearCanvas();
-                    DrawRandomPoints();
+//                    DrawRandomPoints();
+                    DrawCircle();
                     last = now;
                 }
             }
@@ -58,6 +61,25 @@ public class Main extends Application {
             gc.moveTo(p.x, p.y);
             p = Point.getRandom();
             gc.lineTo(p.x, p.y);
+        }
+        gc.stroke();
+        gc.setFill(Color.RED);
+        gc.fillOval(CENTER.x - 5, CENTER.y - 5, 10, 10);
+    }
+
+    public void DrawCircle() {
+        double angle = 2 * Math.PI;
+        int count = 1024;
+        double unit = angle / count;
+        for (int i = 0; i < count; i++){
+            Point p = Point.fromPolar(100, unit * i);
+            p.x += CENTER.x; // offset
+            p.y += CENTER.y; // offset
+            if (i == 0){
+                gc.moveTo(p.x, p.y);
+            } else {
+                gc.lineTo(p.x, p.y);
+            }
         }
         gc.stroke();
         gc.setFill(Color.RED);
