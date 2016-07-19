@@ -1,0 +1,32 @@
+apply plugin: 'java'
+
+
+// Declares binary plugin and its required JavaFX classpath
+apply from: "http://dl.bintray.com/content/shemnon/javafx-gradle/8.1.1/javafx.plugin"
+
+repositories {
+    mavenCentral()
+}
+
+// Configures plugin
+javafx {
+    // Points to JDK and its JavaFX libraries, also declares target runtime JDK
+    javaRuntime = 'C:/Program Files/Java/jdk1.8.0_20'
+
+    // Application name and ID presented by target OS
+    appID 'HelloWorldApp'
+    appName 'Hello World Application'
+
+    // Main class of application
+    mainClass 'main.java.ladar.Main'
+
+    // JVM arguments, system properties, application command line arguments
+    jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
+    systemProperties = ['prism.disableRegionCaching': 'true']
+    arguments = ['-l', '--fast']
+
+}
+dependencies {
+    compile 'org.bidib.jbidib.org.qbang.rxtx:rxtxcomm:2.2'
+}
+

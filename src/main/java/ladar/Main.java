@@ -1,6 +1,6 @@
-package sample;
+package main.java.ladar;
 
-import Geo.Point;
+import main.java.ladar.Geo.Point;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -9,8 +9,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import main.java.ladar.Geo.PointArray;
 
-import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class Main extends Application {
@@ -38,12 +39,14 @@ public class Main extends Application {
                 if (now - last > REFRESH_RATE){
                     ClearCanvas();
 //                    DrawRandomPoints();
-                    DrawCircle();
+//                    DrawCircle();
+                    DrawMap();
                     last = now;
                 }
             }
         };
         timer.start();
+        new ComReader().start();
     }
 
 
@@ -54,6 +57,27 @@ public class Main extends Application {
         root.getChildren().add(canvas);
     }
 
+    public void DrawMap(){
+
+        for (int j = 0; j < 1024; j++){
+            PointArray.put(Point.getRandom());
+        }
+
+        LinkedBlockingQueue<Point> q = PointArray.get();
+        for (int i = 0; i < q.size(); i++){
+            Point p = q.poll();
+            p.x += CENTER.x; // offset
+            p.y += CENTER.y; // offset
+            if (i == 0){
+                gc.moveTo(p.x, p.y);
+            } else {
+                gc.lineTo(p.x, p.y);
+            }
+        }
+        gc.stroke();
+        gc.setFill(Color.RED);
+        gc.fillOval(CENTER.x, CENTER.y, 10, 10);
+    }
 
     public void DrawRandomPoints() {
         Point p = Point.getRandom();
@@ -67,24 +91,6 @@ public class Main extends Application {
         gc.fillOval(CENTER.x - 5, CENTER.y - 5, 10, 10);
     }
 
-    public void DrawCircle() {
-        double angle = 2 * Math.PI;
-        int count = 1024;
-        double unit = angle / count;
-        for (int i = 0; i < count; i++){
-            Point p = Point.fromPolar(100, unit * i);
-            p.x += CENTER.x; // offset
-            p.y += CENTER.y; // offset
-            if (i == 0){
-                gc.moveTo(p.x, p.y);
-            } else {
-                gc.lineTo(p.x, p.y);
-            }
-        }
-        gc.stroke();
-        gc.setFill(Color.RED);
-        gc.fillOval(CENTER.x, CENTER.y, 10, 10);
-    }
 
     public static void main(String[] args) {
         launch(args);

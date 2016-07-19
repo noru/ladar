@@ -1,6 +1,6 @@
-package Geo;
+package main.java.ladar.Geo;
 
-import sample.Main;
+import main.java.ladar.Main;
 
 import java.util.Random;
 
